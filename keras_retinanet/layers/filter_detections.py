@@ -73,7 +73,6 @@ def filter_detections(
         # perform per class filtering
         for c in range(int(classification.shape[1])):
             scores = classification[:, c]
-            overall_scores = classification
             labels = c * backend.ones((keras.backend.shape(scores)[0],), dtype='int64')
             all_indices.append(_filter_detections(scores, labels))
 
@@ -91,6 +90,7 @@ def filter_detections(
 
     # filter input using the final set of indices
     indices             = keras.backend.gather(indices[:, 0], top_indices)
+    overall_scores      = keras.backend.gather(scores, top_indices)
     boxes               = keras.backend.gather(boxes, indices)
     labels              = keras.backend.gather(labels, top_indices)
     other_              = [keras.backend.gather(o, indices) for o in other]
@@ -99,6 +99,7 @@ def filter_detections(
     pad_size = keras.backend.maximum(0, max_detections - keras.backend.shape(scores)[0])
     boxes    = backend.pad(boxes, [[0, pad_size], [0, 0]], constant_values=-1)
     scores   = backend.pad(scores, [[0, pad_size]], constant_values=-1)
+    overall_scores = backend.pad(overall_scores, [[0, pad_size]], constant_values=-1)
     labels   = backend.pad(labels, [[0, pad_size]], constant_values=-1)
     labels   = keras.backend.cast(labels, 'int32')
     other_   = [backend.pad(o, [[0, pad_size]] + [[0, 0] for _ in range(1, len(o.shape))], constant_values=-1) for o in other_]
