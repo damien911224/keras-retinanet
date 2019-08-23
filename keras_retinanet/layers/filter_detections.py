@@ -73,6 +73,7 @@ def filter_detections(
         # perform per class filtering
         for c in range(int(classification.shape[1])):
             scores = classification[:, c]
+            overall_scores = classification
             labels = c * backend.ones((keras.backend.shape(scores)[0],), dtype='int64')
             all_indices.append(_filter_detections(scores, labels))
 
@@ -109,7 +110,7 @@ def filter_detections(
     for o, s in zip(other_, [list(keras.backend.int_shape(o)) for o in other]):
         o.set_shape([max_detections] + s[1:])
 
-    return [boxes, scores, labels] + other_
+    return [boxes, overall_scores, labels] + other_
 
 
 class FilterDetections(keras.layers.Layer):
