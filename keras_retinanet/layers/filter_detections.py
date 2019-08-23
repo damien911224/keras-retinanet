@@ -112,7 +112,7 @@ def filter_detections(
     for o, s in zip(other_, [list(keras.backend.int_shape(o)) for o in other]):
         o.set_shape([max_detections] + s[1:])
 
-    return [boxes, overall_scores, labels] + other_
+    return [boxes, scores, overall_scores, labels] + other_
 
 
 class FilterDetections(keras.layers.Layer):
