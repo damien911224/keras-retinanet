@@ -90,7 +90,7 @@ def filter_detections(
 
     # filter input using the final set of indices
     indices             = keras.backend.gather(indices[:, 0], top_indices)
-    overall_scores      = keras.backend.gather(scores, top_indices)
+    overall_scores      = keras.backend.gather(classification, top_indices)
     boxes               = keras.backend.gather(boxes, indices)
     labels              = keras.backend.gather(labels, top_indices)
     other_              = [keras.backend.gather(o, indices) for o in other]
